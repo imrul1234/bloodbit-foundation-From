@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ব্লাড বিট ব্লাড ফাউন্ডেশন - ডোনার রেজিস্ট্রেশন</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --primary:#e0245e;
+    --primary-dark:#b3184a;
+    --accent1:#ff6b6b;
+    --accent2:#4ecdc4;
+    --accent3:#ffd93d;
+    --accent4:#6c5ce7;
+    --bg:#fef6f3;
+    --card:#ffffff;
+    --text:#2c2c2a;
+    --muted:#6b6b68;
+    --border:#f0d9d2;
+    --success:#1d9e75;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Noto Sans Bengali","Segoe UI",sans-serif;
+    background:linear-gradient(180deg,#fff0eb 0%,#fef6f3 300px,#fef6f3 100%);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(120deg,#e0245e 0%,#ff6b6b 45%,#ffb347 100%);
+    color:#fff;
+    padding:26px 16px;
+    text-align:center;
+    box-shadow:0 4px 16px rgba(224,36,94,0.25);
+  }
+  header h1{margin:0;font-size:22px;font-weight:700;letter-spacing:0.3px;}
+  header p{margin:6px 0 0;font-size:13px;opacity:0.95;}
+  .badges{margin-top:10px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap;}
+  .badges span{
+    background:rgba(255,255,255,0.25);
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+  }
+  .tabs{
+    display:flex;
+    max-width:560px;
+    margin:18px auto 0;
+    gap:8px;
+    padding:0 16px;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:12px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    background:#fff;
+    border:2px solid var(--border);
+    border-radius:12px;
+    transition:all .15s;
+  }
+  .tab.active{
+    color:#fff;
+    background:linear-gradient(120deg,var(--primary),var(--accent1));
+    border-color:transparent;
+    box-shadow:0 4px 10px rgba(224,36,94,0.3);
+  }
+  .container{
+    max-width:560px;
+    margin:0 auto;
+    padding:16px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(224,36,94,0.06);
+  }
+  .section-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--primary);
+    margin:20px 0 8px;
+    padding-bottom:6px;
+    border-bottom:2px dashed var(--border);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .section-title:first-child{margin-top:0;}
+  label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin:12px 0 4px;
+    font-weight:600;
+  }
+  input,select,textarea{
+    width:100%;
+    padding:11px;
+    border:2px solid var(--border);
+    border-radius:10px;
+    font-size:14px;
+    font-family:inherit;
+    background:#fffaf9;
+    color:var(--text);
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+  }
+  textarea{resize:vertical;min-height:60px;}
+  .row2{display:flex;gap:10px;}
+  .row2>div{flex:1;}
+  .checkrow{display:flex;align-items:center;gap:8px;margin-top:14px;background:#fff7ed;border:1px solid #ffe6c7;padding:10px 12px;border-radius:10px;}
+  .checkrow input{width:auto;}
+  .checkrow label{margin:0;font-size:13px;font-weight:500;color:var(--text);}
+  button{
+    width:100%;
+    padding:13px;
+    margin-top:20px;
+    background:linear-gradient(120deg,var(--primary),var(--accent1));
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(224,36,94,0.3);
+  }
+  button:hover{filter:brightness(1.05);}
+  button.secondary{
+    background:#fff;
+    color:var(--primary);
+    border:2px solid var(--primary);
+    box-shadow:none;
+    margin-top:8px;
+  }
+  button.blue{background:linear-gradient(120deg,#4ecdc4,#44a3aa);box-shadow:0 4px 12px rgba(78,205,196,0.3);}
+  button.purple{background:linear-gradient(120deg,#6c5ce7,#a29bfe);box-shadow:0 4px 12px rgba(108,92,231,0.3);}
+  .msg{
+    padding:11px 14px;
+    border-radius:10px;
+    font-size:13px;
+    margin-top:12px;
+    display:none;
+    font-weight:600;
+  }
+  .msg.success{background:#e1f5ee;color:#085041;display:block;border:1px solid #9fe1cb;}
+  .msg.error{background:#fcebeb;color:#791f1f;display:block;border:1px solid #f7c1c1;}
+  .hidden{display:none !important;}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+  th,td{border:1px solid var(--border);padding:7px 9px;text-align:left;}
+  th{background:linear-gradient(120deg,#ffe0e9,#ffe9d6);color:var(--primary-dark);font-weight:700;}
+  tr:nth-child(even){background:#fffaf7;}
+  .toolbar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .toolbar button{width:auto;margin-top:0;padding:9px 16px;font-size:13px;}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .stat{
+    background:linear-gradient(120deg,#ffe0e9,#ffe9d6);
+    color:var(--primary-dark);
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .stat.blue{background:linear-gradient(120deg,#d6f5f2,#c3ecf7);color:#0f6e56;}
+  .stat.purple{background:linear-gradient(120deg,#e6e1fc,#f0e6fc);color:#4a3f9e;}
+  .bg-pill{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:11px;
+    background:linear-gradient(120deg,#e0245e,#ff6b6b);
+    color:#fff;
+  }
+  .del-btn{background:linear-gradient(120deg,#e24b4a,#c0392b);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:700;}
+  .scroll-x{overflow-x:auto;}
+  .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.7;background:#fff7ed;padding:10px 12px;border-radius:10px;border:1px solid #ffe6c7;}
+  .filter-bar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .filter-bar select{flex:1;min-width:120px;}
+
+  /* ===== অ্যানিমেশন ===== */
+  @keyframes fadeInUp{
+    from{opacity:0; transform:translateY(16px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+  }
+  @keyframes popIn{
+    0%{opacity:0; transform:scale(0.85);}
+    60%{opacity:1; transform:scale(1.03);}
+    100%{opacity:1; transform:scale(1);}
+  }
+  @keyframes pulseBeat{
+    0%,100%{transform:scale(1);}
+    25%{transform:scale(1.18);}
+    50%{transform:scale(1);}
+    75%{transform:scale(1.1);}
+  }
+  @keyframes spin{
+    to{transform:rotate(360deg);}
+  }
+  @keyframes shimmer{
+    0%{background-position:-300px 0;}
+    100%{background-position:300px 0;}
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%,60%{transform:translateX(-6px);}
+    40%,80%{transform:translateX(6px);}
+  }
+  @keyframes slideDownFade{
+    from{opacity:0; transform:translateY(-8px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  body{animation:fadeIn .4s ease both;}
+  header h1 .beat-icon{
+    display:inline-block;
+    animation:pulseBeat 1.6s ease-in-out infinite;
+  }
+  header{animation:fadeInUp .5s ease both;}
+  .tabs{animation:fadeInUp .5s ease .1s both;}
+  .tab{transform:scale(1);transition:transform .15s, box-shadow .15s, background .2s, color .2s;}
+  .tab:hover{transform:translateY(-2px);}
+  .tab.active{animation:popIn .35s ease;}
+  .card{animation:fadeInUp .45s ease both;}
+  #formSection.card{animation-delay:.12s;}
+  label{transition:color .2s;}
+  input,select,textarea{transition:border-color .2s, box-shadow .2s, transform .15s;}
+  input:focus,select:focus,textarea:focus{
+    box-shadow:0 0 0 3px rgba(224,36,94,0.12);
+    transform:translateY(-1px);
+  }
+  .section-title{animation:slideDownFade .4s ease both;}
+  button{
+    transition:transform .12s ease, filter .15s ease, box-shadow .15s ease;
+  }
+  button:hover{transform:translateY(-2px) scale(1.01);}
+  button:active{transform:translateY(0) scale(0.97);}
+  .msg{animation:popIn .35s ease;}
+  .msg.error{animation:shake .4s ease, popIn .35s ease;}
+  .checkrow{transition:background .2s;}
+  .checkrow:hover{background:#ffefd6;}
+  .stat{animation:popIn .4s ease both;transition:transform .15s;}
+  .stat:hover{transform:translateY(-2px);}
+  .bg-pill{animation:popIn .3s ease both;}
+  table tbody tr{
+    animation:fadeInUp .4s ease both;
+  }
+  table tbody tr:hover{background:#fff0ea !important;}
+  .del-btn{transition:transform .12s, filter .15s;}
+  .del-btn:hover{transform:scale(1.06);filter:brightness(1.08);}
+  .badges span{animation:fadeInUp .5s ease both;}
+  .badges span:nth-child(1){animation-delay:.15s;}
+  .badges span:nth-child(2){animation-delay:.25s;}
+  .badges span:nth-child(3){animation-delay:.35s;}
+  .loading-spin{
+    display:inline-block;
+    width:16px;height:16px;
+    border:2px solid #f0d9d2;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:middle;
+    margin-right:6px;
+  }
+  .skeleton-row td{
+    height:14px;
+    background:linear-gradient(90deg,#f3ece9 0px,#fbeee9 40px,#f3ece9 80px);
+    background-size:600px 100%;
+    animation:shimmer 1.4s infinite linear;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="beat-icon">🩸</span> ব্লাড বিট ব্লাড ফাউন্ডেশন</h1>
+  <p>রক্তদাতা ডেটাবেস — সবার জীবন বাঁচাতে একসাথে</p>
+  <div class="badges">
+    <span>❤️ জীবন বাঁচান</span>
+    <span>🤝 স্বেচ্ছাসেবী</span>
+    <span>🩸 রক্তদাতা নেটওয়ার্ক</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" id="tabForm" onclick="showTab('form')">📝 ডেটা জমা দিন</div>
+  <div class="tab" id="tabAdmin" onclick="showTab('admin')">🔐 এডমিন প্যানেল</div>
+</div>
+
+<div class="container">
+
+  <!-- ============ PUBLIC FORM ============ -->
+  <div id="formSection" class="card">
+    <form id="donorForm">
+
+      <div class="section-title">👤 ব্যক্তিগত তথ্য</div>
+      <label>পূর্ণ নাম *</label>
+      <input type="text" id="f_name" required placeholder="যেমন: রহিম উদ্দিন">
+
+      <div class="row2">
+        <div>
+          <label>মোবাইল নম্বর *</label>
+          <input type="tel" id="f_phone" required placeholder="01XXXXXXXXX">
+        </div>
+        <div>
+          <label>বিকল্প / জরুরি নম্বর</label>
+          <input type="tel" id="f_altphone" placeholder="ঐচ্ছিক">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label>বয়স</label>
+          <input type="number" id="f_age" min="16" max="70" placeholder="যেমন: 25">
+        </div>
+        <div>
+          <label>লিঙ্গ</label>
+          <select id="f_gender">
+            <option value="">নির্বাচন করুন</option>
+            <option>পুরুষ</option>
+            <option>মহিলা</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label>ওজন (কেজি)</label>
+          <input type="number" id="f_weight" placeholder="যেমন: 60">
+        </div>
+        <div>
+          <label>পেশা</label>
+          <input type="text" id="f_occupation" placeholder="যেমন: শিক্ষার্থী">
+        </div>
+      </div>
+
+      <label>জাতীয় পরিচয়পত্র / জন্মনিবন্ধন নম্বর</label>
+      <input type="text" id="f_nid" placeholder="ঐচ্ছিক">
+
+      <div class="section-title">🩸 রক্তদানের তথ্য</div>
+      <div class="row2">
+        <div>
+          <label>রক্তের গ্রুপ *</label>
+          <select id="f_bloodgroup" required>
+            <option value="">নির্বাচন করুন</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div>
+          <label>মোট কতবার রক্তদান করেছেন</label>
+          <input type="number" id="f_donationcount" min="0" placeholder="যেমন: 3">
+        </div>
+      </div>
+
+      <label>সর্বশেষ রক্তদানের তারিখ (যদি থাকে)</label>
+      <input type="date" id="f_lastdonation">
+
+      <label>আপনি কি বর্তমানে রক্তদানে ইচ্ছুক?</label>
+      <select id="f_available">
+        <option value="হ্যাঁ">✅ হ্যাঁ, ইচ্ছুক</option>
+        <option value="না">❌ না, এই মুহূর্তে নয়</option>
+      </select>
+
+      <label>শারীরিক অবস্থা (যদি কিছু থাকে)</label>
+      <select id="f_health">
+        <option value="সুস্থ">সুস্থ, কোনো সমস্যা নেই</option>
+        <option value="ডায়াবেটিস">ডায়াবেটিস</option>
+        <option value="উচ্চ রক্তচাপ">উচ্চ রক্তচাপ</option>
+        <option value="অন্যান্য">অন্যান্য (মন্তব্যে লিখুন)</option>
+      </select>
+
+      <div class="section-title">📍 ঠিকানা</div>
+      <div class="row2">
+        <div>
+          <label>গ্রাম</label>
+          <input type="text" id="f_village" placeholder="যেমন: বলিভদ্র">
+        </div>
+        <div>
+          <label>ইউনিয়ন</label>
+          <input type="text" id="f_union" value="বলিভদ্র" placeholder="যেমন: বলিভদ্র">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label>উপজেলা</label>
+          <input type="text" id="f_upazila" value="ধনবাড়ি" placeholder="যেমন: ধনবাড়ি">
+        </div>
+        <div>
+          <label>জেলা</label>
+          <input type="text" id="f_district" value="টাংগাইল" placeholder="যেমন: টাংগাইল">
+        </div>
+      </div>
+
+      <label>এলাকা / থানা (অতিরিক্ত হলে লিখুন)</label>
+      <input type="text" id="f_area" placeholder="ঐচ্ছিক">
+
+      <label>পছন্দের রক্তদান কেন্দ্র / হাসপাতাল</label>
+      <input type="text" id="f_center" placeholder="ঐচ্ছিক">
+
+      <div class="section-title">💬 অতিরিক্ত তথ্য</div>
+      <textarea id="f_note" placeholder="কোনো বিশেষ তথ্য থাকলে লিখুন"></textarea>
+
+      <div class="checkrow">
+        <input type="checkbox" id="f_consent" required>
+        <label for="f_consent">আমি নিশ্চিত করছি যে উপরের তথ্য সঠিক এবং ব্লাড বিট ব্লাড ফাউন্ডেশনকে জরুরি প্রয়োজনে যোগাযোগ করার অনুমতি দিচ্ছি।</label>
+      </div>
+
+      <button type="submit" id="submitBtn">✅ তথ্য জমা দিন</button>
+      <div class="msg" id="formMsg"></div>
+    </form>
+  </div>
+
+  <!-- ============ ADMIN LOGIN ============ -->
+  <div id="adminLogin" class="card hidden">
+    <label>এডমিন ইমেইল</label>
+    <input type="email" id="adminEmail" placeholder="admin@example.com">
+    <label>পাসওয়ার্ড</label>
+    <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন">
+    <button onclick="adminLogin()" id="loginBtn">🔓 লগইন করুন</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+
+  <!-- ============ ADMIN PANEL ============ -->
+  <div id="adminPanel" class="card hidden">
+    <div class="stats">
+      <span class="stat">👥 মোট: <span id="statTotal">0</span></span>
+      <span class="stat blue">✅ ইচ্ছুক: <span id="statAvailable">0</span></span>
+      <span class="stat purple">🩸 গ্রুপ: <span id="statGroups">-</span></span>
+    </div>
+
+    <div class="filter-bar">
+      <select id="filterGroup" onchange="applyFilter()">
+        <option value="">সব রক্তের গ্রুপ</option>
+        <option>A+</option><option>A-</option>
+        <option>B+</option><option>B-</option>
+        <option>AB+</option><option>AB-</option>
+        <option>O+</option><option>O-</option>
+      </select>
+      <select id="filterAvailable" onchange="applyFilter()">
+        <option value="">সবাই</option>
+        <option value="হ্যাঁ">শুধু ইচ্ছুক</option>
+        <option value="না">অনিচ্ছুক</option>
+      </select>
+    </div>
+
+    <div class="toolbar">
+      <button onclick="refreshData()" class="blue">🔄 রিফ্রেশ</button>
+      <button onclick="exportCSV()" class="purple">⬇️ CSV / Excel ডাউনলোড</button>
+      <button onclick="adminLogout()" class="secondary" style="width:auto;">🚪 লগআউট</button>
+    </div>
+
+    <div class="scroll-x">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>নাম</th><th>ফোন</th><th>গ্রুপ</th><th>বয়স</th><th>লিঙ্গ</th>
+            <th>ওজন</th><th>দানের সংখ্যা</th><th>গ্রাম</th><th>ইউনিয়ন</th><th>উপজেলা</th><th>জেলা</th><th>এলাকা</th>
+            <th>সর্বশেষ দান</th><th>ইচ্ছুক</th><th>স্বাস্থ্য</th><th>মন্তব্য</th><th>জমার সময়</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <p class="note">
+      এই তালিকা Supabase ডেটাবেসে সংরক্ষিত হয়। এখন এডমিন প্যানেলে ঢুকতে আসল ইমেইল-পাসওয়ার্ড লগইন (Supabase Auth) লাগবে — শুধু ওয়েবসাইটের বাটন লুকিয়ে রাখা নয়, ডেটাবেস লেভেলেই সুরক্ষিত।<br><br>
+      <b>Google Sheets-এ নিতে চাইলে:</b> "CSV / Excel ডাউনলোড" বাটনে ক্লিক করলে একটি .csv ফাইল ডাউনলোড হবে, যা সরাসরি Google Sheets-এ Import (File → Import) করা যাবে।
+    </p>
+  </div>
+
+</div>
+
+<script>
+// ===== Supabase কনফিগারেশন =====
+const SUPABASE_URL = "https://wncrqbtelminismklztr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_a3SXg3iENiKC43teSaEoHg_aTSHgHPH";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const TABLE = "donors";
+
+let isAdmin = false;
+let allData = [];
+
+// পেজ লোড হওয়ার সময় আগে থেকে লগইন করা থাকলে সেশন চেক করা
+(async function checkSession(){
+  const { data } = await sb.auth.getSession();
+  if(data && data.session){
+    isAdmin = true;
+  }
+})();
+
+function showTab(tab){
+  document.getElementById('tabForm').classList.toggle('active', tab==='form');
+  document.getElementById('tabAdmin').classList.toggle('active', tab==='admin');
+  document.getElementById('formSection').classList.toggle('hidden', tab!=='form');
+  if(tab==='admin'){
+    if(isAdmin){
+      document.getElementById('adminLogin').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+      refreshData();
+    } else {
+      document.getElementById('adminLogin').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.add('hidden');
+    }
+  } else {
+    document.getElementById('adminLogin').classList.add('hidden');
+    document.getElementById('adminPanel').classList.add('hidden');
+  }
+}
+
+async function adminLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPass').value;
+  const msg = document.getElementById('loginMsg');
+  const btn = document.getElementById('loginBtn');
+
+  if(!email || !pass){
+    msg.className = 'msg error';
+    msg.textContent = '⚠️ ইমেইল ও পাসওয়ার্ড দিন।';
+    return;
+  }
+
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spin" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>লগইন হচ্ছে...';
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+  btn.disabled = false;
+  btn.textContent = originalText;
+
+  if(error){
+    msg.className = 'msg error';
+    msg.textContent = '❌ ইমেইল বা পাসওয়ার্ড সঠিক নয়।';
+    return;
+  }
+
+  isAdmin = true;
+  document.getElementById('adminLogin').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  msg.className = 'msg';
+  refreshData();
+}
+
+async function adminLogout(){
+  await sb.auth.signOut();
+  isAdmin = false;
+  showTab('admin');
+}
+
+document.getElementById('donorForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const msg = document.getElementById('formMsg');
+  const name = document.getElementById('f_name').value.trim();
+  const phone = document.getElementById('f_phone').value.trim();
+  const bg = document.getElementById('f_bloodgroup').value;
+  const consent = document.getElementById('f_consent').checked;
+
+  if(!name || !phone || !bg){
+    msg.className = 'msg error';
+    msg.textContent = '⚠️ অনুগ্রহ করে * চিহ্নিত ঘরগুলো পূরণ করুন।';
+    return;
+  }
+  if(!consent){
+    msg.className = 'msg error';
+    msg.textContent = '⚠️ অনুগ্রহ করে সম্মতির ঘরে টিক দিন।';
+    return;
+  }
+
+  const entry = {
+    name, phone,
+    altphone: document.getElementById('f_altphone').value.trim() || null,
+    bloodgroup: bg,
+    age: document.getElementById('f_age').value ? Number(document.getElementById('f_age').value) : null,
+    gender: document.getElementById('f_gender').value || null,
+    weight: document.getElementById('f_weight').value ? Number(document.getElementById('f_weight').value) : null,
+    occupation: document.getElementById('f_occupation').value.trim() || null,
+    nid: document.getElementById('f_nid').value.trim() || null,
+    donationcount: document.getElementById('f_donationcount').value ? Number(document.getElementById('f_donationcount').value) : null,
+    lastdonation: document.getElementById('f_lastdonation').value || null,
+    available: document.getElementById('f_available').value,
+    health: document.getElementById('f_health').value,
+    village: document.getElementById('f_village').value.trim() || null,
+    union_name: document.getElementById('f_union').value.trim() || null,
+    upazila: document.getElementById('f_upazila').value.trim() || null,
+    district: document.getElementById('f_district').value.trim() || null,
+    area: document.getElementById('f_area').value.trim() || null,
+    center: document.getElementById('f_center').value.trim() || null,
+    note: document.getElementById('f_note').value.trim() || null
+  };
+
+  const submitBtn = document.getElementById('submitBtn');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<span class="loading-spin" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>জমা হচ্ছে...';
+
+  try{
+    const { error } = await sb.from(TABLE).insert([entry]);
+    if(error) throw error;
+    msg.className = 'msg success';
+    msg.textContent = '🎉 ধন্যবাদ! আপনার তথ্য সফলভাবে জমা হয়েছে।';
+    document.getElementById('donorForm').reset();
+  }catch(err){
+    msg.className = 'msg error';
+    msg.textContent = '❌ একটি সমস্যা হয়েছে। আবার চেষ্টা করুন। (' + err.message + ')';
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+  }
+});
+
+async function refreshData(){
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '<tr class="skeleton-row"><td colspan="18"><span class="loading-spin"></span>লোড হচ্ছে...</td></tr>';
+  try{
+    const { data, error } = await sb.from(TABLE).select('*').order('submitted_at', { ascending: false });
+    if(error) throw error;
+    allData = data || [];
+    applyFilter();
+  }catch(err){
+    allData = [];
+    tbody.innerHTML = '<tr><td colspan="18">ডেটা লোড করা যায়নি। (' + err.message + ')</td></tr>';
+  }
+}
+
+function applyFilter(){
+  const g = document.getElementById('filterGroup').value;
+  const av = document.getElementById('filterAvailable').value;
+  let list = allData.slice();
+  if(g) list = list.filter(d => d.bloodgroup === g);
+  if(av) list = list.filter(d => d.available === av);
+  renderTable(list);
+}
+
+function renderTable(list){
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('statTotal').textContent = allData.length;
+  document.getElementById('statAvailable').textContent = allData.filter(d=>d.available==='হ্যাঁ').length;
+
+  const groupCounts = {};
+  allData.forEach(d=>{ if(d.bloodgroup) groupCounts[d.bloodgroup] = (groupCounts[d.bloodgroup]||0)+1; });
+  const groupSummary = Object.keys(groupCounts).map(k=>`${k}:${groupCounts[k]}`).join(' ') || '-';
+  document.getElementById('statGroups').textContent = groupSummary;
+
+  if(list.length === 0){
+    tbody.innerHTML = '<tr><td colspan="18">কোনো তথ্য পাওয়া যায়নি।</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map((d,i) => `
+    <tr style="animation-delay:${Math.min(i*0.04,0.6)}s">
+      <td>${escapeHtml(d.name)}</td>
+      <td>${escapeHtml(d.phone)}</td>
+      <td><span class="bg-pill">${escapeHtml(d.bloodgroup)}</span></td>
+      <td>${escapeHtml(d.age||'')}</td>
+      <td>${escapeHtml(d.gender||'')}</td>
+      <td>${escapeHtml(d.weight||'')}</td>
+      <td>${escapeHtml(d.donationcount||'')}</td>
+      <td>${escapeHtml(d.village||'')}</td>
+      <td>${escapeHtml(d.union_name||'')}</td>
+      <td>${escapeHtml(d.upazila||'')}</td>
+      <td>${escapeHtml(d.district||'')}</td>
+      <td>${escapeHtml(d.area||'')}</td>
+      <td>${escapeHtml(d.lastdonation||'')}</td>
+      <td>${escapeHtml(d.available||'')}</td>
+      <td>${escapeHtml(d.health||'')}</td>
+      <td>${escapeHtml(d.note||'')}</td>
+      <td>${d.submitted_at ? new Date(d.submitted_at).toLocaleString('bn-BD') : ''}</td>
+      <td><button class="del-btn" onclick="deleteEntry('${d.id}')">মুছুন</button></td>
+    </tr>
+  `).join('');
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+async function deleteEntry(id){
+  if(!confirm('আপনি কি নিশ্চিত এই তথ্যটি মুছে ফেলতে চান?')) return;
+  try{
+    const { error } = await sb.from(TABLE).delete().eq('id', id);
+    if(error) throw error;
+    refreshData();
+  }catch(err){
+    alert('মুছতে সমস্যা হয়েছে। (' + err.message + ')');
+  }
+}
+
+async function exportCSV(){
+  try{
+    const { data, error } = await sb.from(TABLE).select('*').order('submitted_at', { ascending: false });
+    if(error) throw error;
+    const list = data || [];
+    if(list.length === 0){ alert('কোনো তথ্য নেই।'); return; }
+
+    const headers = ['নাম','ফোন','বিকল্প ফোন','রক্তের গ্রুপ','বয়স','লিঙ্গ','ওজন','পেশা','NID',
+      'দানের সংখ্যা','সর্বশেষ দান','ইচ্ছুক','স্বাস্থ্য','গ্রাম','ইউনিয়ন','উপজেলা','জেলা','এলাকা','পছন্দের কেন্দ্র','মন্তব্য','জমার সময়'];
+    const rows = list.map(d => [
+      d.name, d.phone, d.altphone||'', d.bloodgroup, d.age||'', d.gender||'', d.weight||'',
+      d.occupation||'', d.nid||'', d.donationcount||'', d.lastdonation||'', d.available||'',
+      d.health||'', d.village||'', d.union_name||'', d.upazila||'', d.district||'', d.area||'', d.center||'', d.note||'', d.submitted_at||''
+    ]);
+    let csv = '\uFEFF' + headers.join(',') + '\n';
+    rows.forEach(r=>{
+      csv += r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',') + '\n';
+    });
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'blood-beat-blood-foundation-donors.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }catch(err){
+    alert('ডাউনলোড করতে সমস্যা হয়েছে। (' + err.message + ')');
+  }
+}
+</script>
+
+</body>
+</html>
