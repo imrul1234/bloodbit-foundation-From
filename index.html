@@ -50,6 +50,11 @@
     margin:18px auto 0;
     gap:8px;
     padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:20;
+    padding-top:8px;
+    padding-bottom:4px;
   }
   .tab{
     flex:1;
@@ -310,6 +315,79 @@
     background:linear-gradient(90deg,#f3ece9 0px,#fbeee9 40px,#f3ece9 80px);
     background-size:600px 100%;
     animation:shimmer 1.4s infinite linear;
+  }
+
+  /* ===== রেসপন্সিভ লেআউট: মোবাইল থেকে ডেস্কটপ ===== */
+
+  /* খুব ছোট ফোনে (360px এর নিচে) ফিল্ড দুইটার বদলে একটা করে সারিতে */
+  @media (max-width:380px){
+    .row2{flex-direction:column;gap:0;}
+    header h1{font-size:19px;}
+  }
+
+  /* ট্যাবলেট ও তার বড়: ফর্ম-কার্ড একটু চওড়া ও আরামদায়ক */
+  @media (min-width:700px){
+    .tabs, .container{max-width:680px;}
+    header{padding:36px 16px;}
+    header h1{font-size:26px;}
+    header p{font-size:14px;}
+    .card{padding:30px 34px;}
+    .row2{gap:16px;}
+    label{font-size:13.5px;}
+  }
+
+  /* ডেস্কটপ: পুরো পেজ মাঝে বসিয়ে দুই পাশে বাড়তি জায়গা, ছায়াসহ প্যানেল-লুক */
+  @media (min-width:1000px){
+    body{padding:0 0 40px;}
+    .tabs, .container{max-width:760px;}
+    .card{box-shadow:0 10px 30px rgba(224,36,94,0.08);}
+    /* এডমিন প্যানেলের টেবিল দেখতে বেশি জায়গা দরকার, তাই এটাকে কন্টেইনারের বাইরে প্রসারিত করা হলো */
+    #adminPanel.card{
+      max-width:1100px;
+      width:92vw;
+      margin-left:calc(50% - 46vw);
+      margin-right:calc(50% - 46vw);
+      padding:32px 36px;
+    }
+    #adminPanel .scroll-x{overflow-x:visible;}
+    #adminPanel table{font-size:13px;}
+    #adminPanel th, #adminPanel td{padding:10px 12px;}
+  }
+
+  /* মোবাইলে এডমিন টেবিলকে "কার্ড লিস্ট" আকারে দেখানো — পাশাপাশি স্ক্রল না করে ওপর-নিচে পড়া যাবে */
+  @media (max-width:700px){
+    #dataTable thead{display:none;}
+    #dataTable, #dataTable tbody, #dataTable tr, #dataTable td{display:block;width:100%;}
+    #dataTable{border:none;}
+    #dataTable tr{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      margin-bottom:12px;
+      padding:6px 10px;
+      box-shadow:0 3px 10px rgba(224,36,94,0.06);
+    }
+    #dataTable td{
+      border:none;
+      border-bottom:1px dashed #f4ece9;
+      padding:8px 2px 8px 42%;
+      position:relative;
+      text-align:right;
+      min-height:20px;
+      font-size:13px;
+    }
+    #dataTable td:last-child{border-bottom:none;text-align:center;padding-left:2px;}
+    #dataTable td:before{
+      content:attr(data-label);
+      position:absolute;
+      left:2px;
+      top:8px;
+      width:38%;
+      text-align:left;
+      font-weight:700;
+      color:var(--primary-dark);
+      font-size:11.5px;
+    }
   }
 </style>
 </head>
@@ -718,23 +796,23 @@ function renderTable(list){
 
   tbody.innerHTML = list.map((d,i) => `
     <tr style="animation-delay:${Math.min(i*0.04,0.6)}s">
-      <td>${escapeHtml(d.name)}</td>
-      <td>${escapeHtml(d.phone)}</td>
-      <td><span class="bg-pill">${escapeHtml(d.bloodgroup)}</span></td>
-      <td>${escapeHtml(d.age||'')}</td>
-      <td>${escapeHtml(d.gender||'')}</td>
-      <td>${escapeHtml(d.weight||'')}</td>
-      <td>${escapeHtml(d.donationcount||'')}</td>
-      <td>${escapeHtml(d.village||'')}</td>
-      <td>${escapeHtml(d.union_name||'')}</td>
-      <td>${escapeHtml(d.upazila||'')}</td>
-      <td>${escapeHtml(d.district||'')}</td>
-      <td>${escapeHtml(d.area||'')}</td>
-      <td>${escapeHtml(d.lastdonation||'')}</td>
-      <td>${escapeHtml(d.available||'')}</td>
-      <td>${escapeHtml(d.health||'')}</td>
-      <td>${escapeHtml(d.note||'')}</td>
-      <td>${d.submitted_at ? new Date(d.submitted_at).toLocaleString('bn-BD') : ''}</td>
+      <td data-label="নাম">${escapeHtml(d.name)}</td>
+      <td data-label="ফোন">${escapeHtml(d.phone)}</td>
+      <td data-label="গ্রুপ"><span class="bg-pill">${escapeHtml(d.bloodgroup)}</span></td>
+      <td data-label="বয়স">${escapeHtml(d.age||'')}</td>
+      <td data-label="লিঙ্গ">${escapeHtml(d.gender||'')}</td>
+      <td data-label="ওজন">${escapeHtml(d.weight||'')}</td>
+      <td data-label="দানের সংখ্যা">${escapeHtml(d.donationcount||'')}</td>
+      <td data-label="গ্রাম">${escapeHtml(d.village||'')}</td>
+      <td data-label="ইউনিয়ন">${escapeHtml(d.union_name||'')}</td>
+      <td data-label="উপজেলা">${escapeHtml(d.upazila||'')}</td>
+      <td data-label="জেলা">${escapeHtml(d.district||'')}</td>
+      <td data-label="এলাকা">${escapeHtml(d.area||'')}</td>
+      <td data-label="সর্বশেষ দান">${escapeHtml(d.lastdonation||'')}</td>
+      <td data-label="ইচ্ছুক">${escapeHtml(d.available||'')}</td>
+      <td data-label="স্বাস্থ্য">${escapeHtml(d.health||'')}</td>
+      <td data-label="মন্তব্য">${escapeHtml(d.note||'')}</td>
+      <td data-label="জমার সময়">${d.submitted_at ? new Date(d.submitted_at).toLocaleString('bn-BD') : ''}</td>
       <td><button class="del-btn" onclick="deleteEntry('${d.id}')">মুছুন</button></td>
     </tr>
   `).join('');
