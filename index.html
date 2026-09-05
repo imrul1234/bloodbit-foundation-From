@@ -642,9 +642,6 @@
         </div>
       </div>
 
-      <label>জাতীয় পরিচয়পত্র / জন্মনিবন্ধন নম্বর</label>
-      <input type="text" id="f_nid" placeholder="ঐচ্ছিক">
-
       <div class="section-title">🩸 রক্তদানের তথ্য</div>
       <div class="row2">
         <div>
@@ -702,12 +699,6 @@
           <input type="text" id="f_district" value="টাংগাইল" placeholder="যেমন: টাংগাইল">
         </div>
       </div>
-
-      <label>এলাকা / থানা (অতিরিক্ত হলে লিখুন)</label>
-      <input type="text" id="f_area" placeholder="ঐচ্ছিক">
-
-      <label>পছন্দের রক্তদান কেন্দ্র / হাসপাতাল</label>
-      <input type="text" id="f_center" placeholder="ঐচ্ছিক">
 
       <div class="section-title">💬 অতিরিক্ত তথ্য</div>
       <textarea id="f_note" placeholder="কোনো বিশেষ তথ্য থাকলে লিখুন"></textarea>
@@ -786,7 +777,7 @@
         <thead>
           <tr>
             <th>নাম</th><th>ফোন</th><th>গ্রুপ</th><th>বয়স</th><th>লিঙ্গ</th>
-            <th>ওজন</th><th>দানের সংখ্যা</th><th>গ্রাম</th><th>ইউনিয়ন</th><th>উপজেলা</th><th>জেলা</th><th>এলাকা</th>
+            <th>ওজন</th><th>দানের সংখ্যা</th><th>গ্রাম</th><th>ইউনিয়ন</th><th>উপজেলা</th><th>জেলা</th>
             <th>সর্বশেষ দান</th><th>ইচ্ছুক</th><th>স্বাস্থ্য</th><th>মন্তব্য</th><th>জমার সময়</th><th></th>
           </tr>
         </thead>
@@ -961,7 +952,6 @@ document.getElementById('donorForm').addEventListener('submit', async function(e
     gender: document.getElementById('f_gender').value || null,
     weight: document.getElementById('f_weight').value ? Number(document.getElementById('f_weight').value) : null,
     occupation: document.getElementById('f_occupation').value.trim() || null,
-    nid: document.getElementById('f_nid').value.trim() || null,
     donationcount: document.getElementById('f_donationcount').value ? Number(document.getElementById('f_donationcount').value) : null,
     lastdonation: document.getElementById('f_lastdonation').value || null,
     available: document.getElementById('f_available').value,
@@ -970,8 +960,6 @@ document.getElementById('donorForm').addEventListener('submit', async function(e
     union_name: document.getElementById('f_union').value.trim() || null,
     upazila: document.getElementById('f_upazila').value.trim() || null,
     district: document.getElementById('f_district').value.trim() || null,
-    area: document.getElementById('f_area').value.trim() || null,
-    center: document.getElementById('f_center').value.trim() || null,
     note: document.getElementById('f_note').value.trim() || null
   };
 
@@ -1008,7 +996,7 @@ function toggleAutoRefresh(){
 
 async function refreshData(){
   const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '<tr class="skeleton-row"><td colspan="18"><span class="loading-spin"></span>লোড হচ্ছে...</td></tr>';
+  tbody.innerHTML = '<tr class="skeleton-row"><td colspan="17"><span class="loading-spin"></span>লোড হচ্ছে...</td></tr>';
   try{
     const { data, error } = await sb.from(TABLE).select('*').order('submitted_at', { ascending: false });
     if(error) throw error;
@@ -1017,7 +1005,7 @@ async function refreshData(){
     document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('bn-BD');
   }catch(err){
     allData = [];
-    tbody.innerHTML = '<tr><td colspan="18">ডেটা লোড করা যায়নি। (' + err.message + ')</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="17">ডেটা লোড করা যায়নি। (' + err.message + ')</td></tr>';
   }
 }
 
@@ -1071,7 +1059,7 @@ function renderGroupChips(){
 
   const areaCounts = {};
   allData.forEach(d=>{
-    const key = d.village || d.union_name || d.upazila || d.area;
+    const key = d.village || d.union_name || d.upazila;
     if(key) areaCounts[key] = (areaCounts[key]||0)+1;
   });
   const topAreas = Object.entries(areaCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
@@ -1088,7 +1076,7 @@ function renderTable(list){
   renderGroupChips();
 
   if(list.length === 0){
-    tbody.innerHTML = '<tr><td colspan="18">কোনো তথ্য পাওয়া যায়নি।</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="17">কোনো তথ্য পাওয়া যায়নি।</td></tr>';
     return;
   }
 
@@ -1105,7 +1093,6 @@ function renderTable(list){
       <td data-label="ইউনিয়ন">${escapeHtml(d.union_name||'')}</td>
       <td data-label="উপজেলা">${escapeHtml(d.upazila||'')}</td>
       <td data-label="জেলা">${escapeHtml(d.district||'')}</td>
-      <td data-label="এলাকা">${escapeHtml(d.area||'')}</td>
       <td data-label="সর্বশেষ দান">${escapeHtml(d.lastdonation||'')}</td>
       <td data-label="ইচ্ছুক">${escapeHtml(d.available||'')}</td>
       <td data-label="স্বাস্থ্য">${escapeHtml(d.health||'')}</td>
@@ -1138,12 +1125,12 @@ async function exportCSV(){
     const list = data || [];
     if(list.length === 0){ alert('কোনো তথ্য নেই।'); return; }
 
-    const headers = ['নাম','ফোন','বিকল্প ফোন','রক্তের গ্রুপ','বয়স','লিঙ্গ','ওজন','পেশা','NID',
-      'দানের সংখ্যা','সর্বশেষ দান','ইচ্ছুক','স্বাস্থ্য','গ্রাম','ইউনিয়ন','উপজেলা','জেলা','এলাকা','পছন্দের কেন্দ্র','মন্তব্য','জমার সময়'];
+    const headers = ['নাম','ফোন','বিকল্প ফোন','রক্তের গ্রুপ','বয়স','লিঙ্গ','ওজন','পেশা',
+      'দানের সংখ্যা','সর্বশেষ দান','ইচ্ছুক','স্বাস্থ্য','গ্রাম','ইউনিয়ন','উপজেলা','জেলা','মন্তব্য','জমার সময়'];
     const rows = list.map(d => [
       d.name, d.phone, d.altphone||'', d.bloodgroup, d.age||'', d.gender||'', d.weight||'',
-      d.occupation||'', d.nid||'', d.donationcount||'', d.lastdonation||'', d.available||'',
-      d.health||'', d.village||'', d.union_name||'', d.upazila||'', d.district||'', d.area||'', d.center||'', d.note||'', d.submitted_at||''
+      d.occupation||'', d.donationcount||'', d.lastdonation||'', d.available||'',
+      d.health||'', d.village||'', d.union_name||'', d.upazila||'', d.district||'', d.note||'', d.submitted_at||''
     ]);
     let csv = '\uFEFF' + headers.join(',') + '\n';
     rows.forEach(r=>{
