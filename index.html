@@ -389,6 +389,183 @@
       font-size:11.5px;
     }
   }
+
+  /* ===== ধন্যবাদ / থ্যাংক-ইউ স্ক্রিন ===== */
+  @keyframes popBig{
+    0%{opacity:0; transform:scale(0.6) translateY(10px);}
+    60%{opacity:1; transform:scale(1.08) translateY(0);}
+    100%{opacity:1; transform:scale(1) translateY(0);}
+  }
+  @keyframes bounceIcon{
+    0%,100%{transform:translateY(0) scale(1);}
+    50%{transform:translateY(-10px) scale(1.08);}
+  }
+  @keyframes confettiFall{
+    0%{transform:translateY(-40px) rotate(0deg); opacity:0;}
+    15%{opacity:1;}
+    100%{transform:translateY(220px) rotate(360deg); opacity:0;}
+  }
+  .thank-you-card{
+    text-align:center;
+    padding:44px 24px;
+    position:relative;
+    overflow:hidden;
+    animation:popBig .55s cubic-bezier(.26,1.4,.4,1) both;
+    background:linear-gradient(180deg,#fff9f6,#ffffff);
+  }
+  .thank-you-icon{
+    font-size:72px;
+    line-height:1;
+    animation:bounceIcon 1.6s ease-in-out infinite;
+  }
+  .thank-you-title{
+    font-size:34px;
+    margin:16px 0 6px;
+    background:linear-gradient(120deg,var(--primary),var(--accent1));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    font-weight:800;
+  }
+  .thank-you-sub{
+    font-size:17px;
+    font-weight:700;
+    color:var(--text);
+    margin:0 0 14px;
+  }
+  .thank-you-note{
+    font-size:14px;
+    color:var(--muted);
+    max-width:420px;
+    margin:0 auto;
+    line-height:1.8;
+  }
+  .thank-you-card::before, .thank-you-card::after{
+    content:"🎊";
+    position:absolute;
+    top:-30px;
+    font-size:22px;
+    animation:confettiFall 2.4s ease-in infinite;
+  }
+  .thank-you-card::before{left:18%; animation-delay:.1s;}
+  .thank-you-card::after{right:18%; animation-delay:.6s;}
+
+  /* ===== হিরো / ট্যাগলাইন সেকশন ===== */
+  .hero-section{
+    max-width:560px;
+    margin:0 auto;
+    padding:18px 16px 0;
+    text-align:center;
+    animation:fadeInUp .5s ease .08s both;
+  }
+  .hero-banner{
+    font-size:16px;
+    font-weight:800;
+    color:var(--primary-dark);
+    background:linear-gradient(120deg,#fff0e9,#ffe6ee);
+    border:1px solid #ffd9d0;
+    border-radius:14px;
+    padding:12px 16px;
+    display:inline-block;
+  }
+  .hero-banner span{
+    background:linear-gradient(120deg,var(--primary),var(--accent1));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .hero-quote{
+    font-size:13.5px;
+    color:var(--muted);
+    font-style:italic;
+    max-width:440px;
+    margin:12px auto 0;
+    line-height:1.8;
+  }
+  .hero-counter{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    background:#fff;
+    border:2px solid #ffe0e9;
+    border-radius:22px;
+    padding:8px 18px;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary-dark);
+    box-shadow:0 4px 12px rgba(224,36,94,0.08);
+  }
+  .hero-counter b{
+    font-size:17px;
+    color:var(--primary);
+  }
+  .hero-counter-icon{animation:bounceIcon 2s ease-in-out infinite;}
+
+  @media (min-width:700px){
+    .hero-section{max-width:680px;}
+    .hero-banner{font-size:18px;}
+  }
+
+  /* ===== এডভান্সড এডমিন প্যানেল উপাদান ===== */
+  .admin-header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .auto-refresh-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:11.5px;
+    color:var(--muted);
+  }
+  .switch{position:relative;display:inline-block;width:38px;height:22px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .switch-slider{
+    position:absolute;cursor:pointer;inset:0;
+    background:#e5ddd9;border-radius:22px;
+    transition:.2s;
+  }
+  .switch-slider:before{
+    content:"";position:absolute;height:16px;width:16px;left:3px;bottom:3px;
+    background:#fff;border-radius:50%;transition:.2s;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
+  }
+  .switch input:checked + .switch-slider{background:linear-gradient(120deg,var(--primary),var(--accent1));}
+  .switch input:checked + .switch-slider:before{transform:translateX(16px);}
+  .last-updated{white-space:nowrap;}
+
+  .bar-chart{display:flex;flex-direction:column;gap:8px;margin:10px 0 16px;}
+  .bar-row{display:flex;align-items:center;gap:8px;font-size:12px;}
+  .bar-row .bar-label{width:38px;flex-shrink:0;font-weight:700;color:var(--primary-dark);}
+  .bar-row .bar-track{flex:1;background:#f4ece9;border-radius:8px;height:14px;overflow:hidden;}
+  .bar-row .bar-fill{
+    height:100%;
+    border-radius:8px;
+    background:linear-gradient(120deg,var(--primary),var(--accent1));
+    transition:width .6s cubic-bezier(.22,1,.36,1);
+    width:0%;
+  }
+  .bar-row .bar-count{width:26px;text-align:right;flex-shrink:0;font-weight:700;color:var(--muted);}
+
+  .top-areas{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;}
+  .area-chip{
+    background:linear-gradient(120deg,#e6e1fc,#f0e6fc);
+    color:#4a3f9e;
+    padding:6px 12px;
+    border-radius:16px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .area-chip .count{
+    margin-left:4px;
+    background:rgba(255,255,255,0.6);
+    padding:1px 7px;
+    border-radius:10px;
+  }
 </style>
 </head>
 <body>
@@ -402,6 +579,15 @@
     <span>🩸 রক্তদাতা নেটওয়ার্ক</span>
   </div>
 </header>
+
+<div class="hero-section">
+  <div class="hero-banner">🩸 রক্ত দিন, প্রাণ বাঁচান — <span>ব্লাডবিট ব্লাড ফাউন্ডেশন</span></div>
+  <p class="hero-quote">"এক ফোঁটা রক্ত, একটি নতুন জীবনের প্রতিশ্রুতি। আমাদের কমিউনিটিতে যুক্ত হোন — রক্তদাতা খুঁজুন, গ্রুপ গড়ুন, বার্তা পাঠান।"</p>
+  <div class="hero-counter">
+    <span class="hero-counter-icon">👥</span>
+    <span>এ পর্যন্ত যুক্ত হয়েছেন <b id="publicMemberCount">…</b> জন সদস্য</span>
+  </div>
+</div>
 
 <div class="tabs">
   <div class="tab active" id="tabForm" onclick="showTab('form')">📝 ডেটা জমা দিন</div>
@@ -536,6 +722,14 @@
     </form>
   </div>
 
+  <!-- ============ THANK YOU SCREEN ============ -->
+  <div id="thankYouSection" class="card hidden thank-you-card">
+    <div class="thank-you-icon">🎉</div>
+    <h2 class="thank-you-title">ধন্যবাদ!</h2>
+    <p class="thank-you-sub">আপনার তথ্য সফলভাবে জমা হয়েছে।</p>
+    <p class="thank-you-note" id="thankYouNote">আপনি ব্লাড বিট ব্লাড ফাউন্ডেশনের একজন সম্মানিত রক্তদাতা হিসেবে নিবন্ধিত হলেন। প্রয়োজনে আমরা আপনার সাথে যোগাযোগ করব। 🩸❤️</p>
+  </div>
+
   <!-- ============ ADMIN LOGIN ============ -->
   <div id="adminLogin" class="card hidden">
     <label>এডমিন ইমেইল</label>
@@ -548,13 +742,26 @@
 
   <!-- ============ ADMIN PANEL ============ -->
   <div id="adminPanel" class="card hidden">
-    <div class="stats">
-      <span class="stat">👥 মোট: <span id="statTotal">0</span></span>
-      <span class="stat blue">✅ ইচ্ছুক: <span id="statAvailable">0</span></span>
+    <div class="admin-header-row">
+      <div class="stats">
+        <span class="stat">👥 মোট: <span id="statTotal">0</span></span>
+        <span class="stat blue">✅ ইচ্ছুক: <span id="statAvailable">0</span></span>
+      </div>
+      <div class="auto-refresh-box">
+        <label class="switch">
+          <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()">
+          <span class="switch-slider"></span>
+        </label>
+        <span class="last-updated">🕒 সর্বশেষ আপডেট: <span id="lastUpdated">-</span></span>
+      </div>
     </div>
 
     <div class="section-title" style="margin-top:14px;">🩸 রক্তের গ্রুপ অনুযায়ী দেখুন (ক্লিক করুন)</div>
     <div class="group-chips" id="groupChips"></div>
+    <div class="bar-chart" id="groupBarChart"></div>
+
+    <div class="section-title">📍 এলাকাভিত্তিক শীর্ষ তালিকা</div>
+    <div class="top-areas" id="topAreas"></div>
 
     <div class="filter-bar">
       <select id="filterAvailable" onchange="applyFilter()">
@@ -603,6 +810,7 @@ const TABLE = "donors";
 
 let isAdmin = false;
 let allData = [];
+const SUBMITTED_KEY = 'bbbf_submitted_v1';
 
 // পেজ লোড হওয়ার সময় আগে থেকে লগইন করা থাকলে সেশন চেক করা
 (async function checkSession(){
@@ -612,10 +820,54 @@ let allData = [];
   }
 })();
 
+function hasAlreadySubmitted(){
+  try{
+    return localStorage.getItem(SUBMITTED_KEY) === '1';
+  }catch(err){
+    return false;
+  }
+}
+
+function markAsSubmitted(){
+  try{
+    localStorage.setItem(SUBMITTED_KEY, '1');
+  }catch(err){ /* localStorage না থাকলেও সমস্যা নেই, চলবে */ }
+}
+
+function showThankYou(){
+  document.getElementById('formSection').classList.add('hidden');
+  document.getElementById('thankYouSection').classList.remove('hidden');
+}
+
+// পাবলিক মোট সদস্য সংখ্যা লোড করা (stats টেবিল থেকে)
+async function loadPublicCount(){
+  const el = document.getElementById('publicMemberCount');
+  try{
+    const { data, error } = await sb.from('stats').select('total_members').eq('id', 1).single();
+    if(error) throw error;
+    el.textContent = (data && typeof data.total_members === 'number') ? data.total_members : '০';
+  }catch(err){
+    el.textContent = '—';
+  }
+}
+
 function showTab(tab){
   document.getElementById('tabForm').classList.toggle('active', tab==='form');
   document.getElementById('tabAdmin').classList.toggle('active', tab==='admin');
-  document.getElementById('formSection').classList.toggle('hidden', tab!=='form');
+
+  if(tab==='form'){
+    if(hasAlreadySubmitted()){
+      document.getElementById('formSection').classList.add('hidden');
+      document.getElementById('thankYouSection').classList.remove('hidden');
+    } else {
+      document.getElementById('formSection').classList.remove('hidden');
+      document.getElementById('thankYouSection').classList.add('hidden');
+    }
+  } else {
+    document.getElementById('formSection').classList.add('hidden');
+    document.getElementById('thankYouSection').classList.add('hidden');
+  }
+
   if(tab==='admin'){
     if(isAdmin){
       document.getElementById('adminLogin').classList.add('hidden');
@@ -630,6 +882,16 @@ function showTab(tab){
     document.getElementById('adminPanel').classList.add('hidden');
   }
 }
+
+// পেজ লোড হওয়ার সাথে সাথেই চেক করা — আগে সাবমিট করা থাকলে সরাসরি থ্যাংক-ইউ স্ক্রিন দেখানো
+document.addEventListener('DOMContentLoaded', function(){
+  if(hasAlreadySubmitted()){
+    document.getElementById('formSection').classList.add('hidden');
+    document.getElementById('thankYouSection').classList.remove('hidden');
+  }
+  loadPublicCount();
+});
+
 
 async function adminLogin(){
   const email = document.getElementById('adminEmail').value.trim();
@@ -668,6 +930,7 @@ async function adminLogin(){
 async function adminLogout(){
   await sb.auth.signOut();
   isAdmin = false;
+  if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
   showTab('admin');
 }
 
@@ -720,9 +983,10 @@ document.getElementById('donorForm').addEventListener('submit', async function(e
   try{
     const { error } = await sb.from(TABLE).insert([entry]);
     if(error) throw error;
-    msg.className = 'msg success';
-    msg.textContent = '🎉 ধন্যবাদ! আপনার তথ্য সফলভাবে জমা হয়েছে।';
     document.getElementById('donorForm').reset();
+    markAsSubmitted();
+    showThankYou();
+    loadPublicCount();
   }catch(err){
     msg.className = 'msg error';
     msg.textContent = '❌ একটি সমস্যা হয়েছে। আবার চেষ্টা করুন। (' + err.message + ')';
@@ -732,6 +996,16 @@ document.getElementById('donorForm').addEventListener('submit', async function(e
   }
 });
 
+let autoRefreshTimer = null;
+
+function toggleAutoRefresh(){
+  const on = document.getElementById('autoRefreshToggle').checked;
+  if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
+  if(on){
+    autoRefreshTimer = setInterval(refreshData, 30000);
+  }
+}
+
 async function refreshData(){
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '<tr class="skeleton-row"><td colspan="18"><span class="loading-spin"></span>লোড হচ্ছে...</td></tr>';
@@ -740,6 +1014,7 @@ async function refreshData(){
     if(error) throw error;
     allData = data || [];
     applyFilter();
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('bn-BD');
   }catch(err){
     allData = [];
     tbody.innerHTML = '<tr><td colspan="18">ডেটা লোড করা যায়নি। (' + err.message + ')</td></tr>';
@@ -781,6 +1056,29 @@ function renderGroupChips(){
     chips.push(`<span class="group-chip${activeGroup===g?' active':''}" onclick="selectGroup('${g}')">${g}<span class="count">${c}</span></span>`);
   });
   document.getElementById('groupChips').innerHTML = chips.join('');
+
+  const maxCount = Math.max(1, ...BLOOD_GROUP_ORDER.map(g => groupCounts[g] || 0));
+  const barHtml = BLOOD_GROUP_ORDER.map(g=>{
+    const c = groupCounts[g] || 0;
+    const pct = Math.round((c / maxCount) * 100);
+    return `<div class="bar-row">
+      <span class="bar-label">${g}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${pct}%"></span></span>
+      <span class="bar-count">${c}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('groupBarChart').innerHTML = barHtml;
+
+  const areaCounts = {};
+  allData.forEach(d=>{
+    const key = d.village || d.union_name || d.upazila || d.area;
+    if(key) areaCounts[key] = (areaCounts[key]||0)+1;
+  });
+  const topAreas = Object.entries(areaCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const areaHtml = topAreas.length
+    ? topAreas.map(([name,count]) => `<span class="area-chip">${escapeHtml(name)}<span class="count">${count}</span></span>`).join('')
+    : '<span class="note" style="margin:0;">এখনো কোনো এলাকার তথ্য নেই।</span>';
+  document.getElementById('topAreas').innerHTML = areaHtml;
 }
 
 function renderTable(list){
